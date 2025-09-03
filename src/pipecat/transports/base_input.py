@@ -49,7 +49,7 @@ from pipecat.metrics.metrics import MetricsData
 from pipecat.processors.frame_processor import FrameDirection, FrameProcessor
 from pipecat.transports.base_transport import TransportParams
 
-AUDIO_INPUT_TIMEOUT_SECS = 2.5
+AUDIO_INPUT_TIMEOUT_SECS = 5.0
 
 
 class BaseInputTransport(FrameProcessor):
