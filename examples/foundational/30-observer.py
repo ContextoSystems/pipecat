@@ -15,8 +15,8 @@ from pipecat.frames.frames import (
     BotStartedSpeakingFrame,
     BotStoppedSpeakingFrame,
     EndFrame,
+    InterruptionFrame,
     LLMRunFrame,
-    StartInterruptionFrame,
     TTSTextFrame,
     UserStartedSpeakingFrame,
 )
@@ -38,8 +38,8 @@ from pipecat.services.openai.llm import OpenAILLMService
 from pipecat.transports.base_input import BaseInputTransport
 from pipecat.transports.base_output import BaseOutputTransport
 from pipecat.transports.base_transport import BaseTransport, TransportParams
-from pipecat.transports.network.fastapi_websocket import FastAPIWebsocketParams
-from pipecat.transports.services.daily import DailyParams
+from pipecat.transports.daily.transport import DailyParams
+from pipecat.transports.websocket.fastapi import FastAPIWebsocketParams
 
 load_dotenv(override=True)
 
@@ -48,7 +48,7 @@ class CustomObserver(BaseObserver):
     """Observer to log interruptions and bot speaking events to the console.
 
     Logs all frame instances of:
-    - StartInterruptionFrame
+    - InterruptionFrame
     - BotStartedSpeakingFrame
     - BotStoppedSpeakingFrame
 
@@ -69,7 +69,7 @@ class CustomObserver(BaseObserver):
         # Create direction arrow
         arrow = "→" if direction == FrameDirection.DOWNSTREAM else "←"
 
-        if isinstance(frame, StartInterruptionFrame) and isinstance(src, BaseOutputTransport):
+        if isinstance(frame, InterruptionFrame) and isinstance(src, BaseOutputTransport):
             logger.info(f"⚡ INTERRUPTION START: {src} {arrow} {dst} at {time_sec:.2f}s")
         elif isinstance(frame, BotStartedSpeakingFrame):
             logger.info(f"🤖 BOT START SPEAKING: {src} {arrow} {dst} at {time_sec:.2f}s")

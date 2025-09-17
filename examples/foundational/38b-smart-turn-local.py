@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from pipecat.audio.turn.smart_turn.base_smart_turn import SmartTurnParams
-from pipecat.audio.turn.smart_turn.local_smart_turn_v2 import LocalSmartTurnAnalyzerV2
+from pipecat.audio.turn.smart_turn.local_smart_turn_v3 import LocalSmartTurnAnalyzerV3
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.audio.vad.vad_analyzer import VADParams
 from pipecat.frames.frames import LLMRunFrame
@@ -25,27 +25,10 @@ from pipecat.services.cartesia.tts import CartesiaTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.openai.llm import OpenAILLMService
 from pipecat.transports.base_transport import BaseTransport, TransportParams
-from pipecat.transports.network.fastapi_websocket import FastAPIWebsocketParams
-from pipecat.transports.services.daily import DailyParams
+from pipecat.transports.daily.transport import DailyParams
+from pipecat.transports.websocket.fastapi import FastAPIWebsocketParams
 
 load_dotenv(override=True)
-
-# To use this locally, set the environment variable LOCAL_SMART_TURN_MODEL_PATH
-# to the path where the smart-turn repo is cloned.
-#
-# Example setup:
-#
-#   # Git LFS (Large File Storage)
-#   brew install git-lfs
-#   # Hugging Face uses LFS to store large model files, including .mlpackage
-#   git lfs install
-#   # Clone the repo with the smart_turn_classifier.mlpackage
-#   git clone https://huggingface.co/pipecat-ai/smart-turn-v2
-#
-# Then set the env variable:
-#   export LOCAL_SMART_TURN_MODEL_PATH=./smart-turn
-# or add it to your .env file
-smart_turn_model_path = os.getenv("LOCAL_SMART_TURN_MODEL_PATH")
 
 # We store functions so objects (e.g. SileroVADAnalyzer) don't get
 # instantiated. The function will be called when the desired transport gets
@@ -55,25 +38,19 @@ transport_params = {
         audio_in_enabled=True,
         audio_out_enabled=True,
         vad_analyzer=SileroVADAnalyzer(params=VADParams(stop_secs=0.2)),
-        turn_analyzer=LocalSmartTurnAnalyzerV2(
-            smart_turn_model_path=smart_turn_model_path, params=SmartTurnParams()
-        ),
+        turn_analyzer=LocalSmartTurnAnalyzerV3(params=SmartTurnParams()),
     ),
     "twilio": lambda: FastAPIWebsocketParams(
         audio_in_enabled=True,
         audio_out_enabled=True,
         vad_analyzer=SileroVADAnalyzer(params=VADParams(stop_secs=0.2)),
-        turn_analyzer=LocalSmartTurnAnalyzerV2(
-            smart_turn_model_path=smart_turn_model_path, params=SmartTurnParams()
-        ),
+        turn_analyzer=LocalSmartTurnAnalyzerV3(params=SmartTurnParams()),
     ),
     "webrtc": lambda: TransportParams(
         audio_in_enabled=True,
         audio_out_enabled=True,
         vad_analyzer=SileroVADAnalyzer(params=VADParams(stop_secs=0.2)),
-        turn_analyzer=LocalSmartTurnAnalyzerV2(
-            smart_turn_model_path=smart_turn_model_path, params=SmartTurnParams()
-        ),
+        turn_analyzer=LocalSmartTurnAnalyzerV3(params=SmartTurnParams()),
     ),
 }
 

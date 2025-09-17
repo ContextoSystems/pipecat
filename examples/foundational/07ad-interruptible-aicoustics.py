@@ -26,8 +26,8 @@ from pipecat.services.cartesia.tts import CartesiaTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.openai.llm import OpenAILLMService
 from pipecat.transports.base_transport import BaseTransport, TransportParams
-from pipecat.transports.network.fastapi_websocket import FastAPIWebsocketParams
-from pipecat.transports.services.daily import DailyParams
+from pipecat.transports.daily.transport import DailyParams
+from pipecat.transports.websocket.fastapi import FastAPIWebsocketParams
 
 load_dotenv(override=True)
 
@@ -36,7 +36,6 @@ load_dotenv(override=True)
 audiobuffer = AudioBufferProcessor(
     num_channels=2,  # 1 for mono, 2 for stereo (user left, bot right)
     enable_turn_audio=False,  # Enable per-turn audio recording
-    user_continuous_stream=True,  # User has continuous audio stream
 )
 
 

@@ -20,8 +20,8 @@ from pipecat.frames.frames import (
     EndFrame,
     ErrorFrame,
     Frame,
+    InterruptionFrame,
     StartFrame,
-    StartInterruptionFrame,
     TTSAudioRawFrame,
     TTSStartedFrame,
     TTSStoppedFrame,
@@ -52,6 +52,10 @@ def language_to_async_language(language: Language) -> Optional[str]:
     """
     BASE_LANGUAGES = {
         Language.EN: "en",
+        Language.FR: "fr",
+        Language.ES: "es",
+        Language.DE: "de",
+        Language.IT: "it",
     }
 
     result = BASE_LANGUAGES.get(language)
@@ -271,7 +275,7 @@ class AsyncAITTSService(InterruptibleTTSService):
             direction: The direction to push the frame.
         """
         await super().push_frame(frame, direction)
-        if isinstance(frame, (TTSStoppedFrame, StartInterruptionFrame)):
+        if isinstance(frame, (TTSStoppedFrame, InterruptionFrame)):
             self._started = False
 
     async def _receive_messages(self):

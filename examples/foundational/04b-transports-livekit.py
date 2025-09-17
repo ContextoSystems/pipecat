@@ -14,7 +14,7 @@ from loguru import logger
 
 from pipecat.audio.vad.silero import SileroVADAnalyzer
 from pipecat.frames.frames import (
-    BotInterruptionFrame,
+    InterruptionFrame,
     TextFrame,
     TranscriptionFrame,
     UserStartedSpeakingFrame,
@@ -28,7 +28,7 @@ from pipecat.runner.livekit import configure
 from pipecat.services.cartesia.tts import CartesiaTTSService
 from pipecat.services.deepgram.stt import DeepgramSTTService
 from pipecat.services.openai.llm import OpenAILLMService
-from pipecat.transports.services.livekit import LiveKitParams, LiveKitTransport
+from pipecat.transports.livekit.transport import LiveKitParams, LiveKitTransport
 
 load_dotenv(override=True)
 
@@ -115,7 +115,7 @@ async def main():
 
         await task.queue_frames(
             [
-                BotInterruptionFrame(),
+                InterruptionFrame(),
                 UserStartedSpeakingFrame(),
                 TranscriptionFrame(
                     user_id=participant_id,
